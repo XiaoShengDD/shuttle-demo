@@ -5,16 +5,17 @@
         <el-tree
           :props="props"
           :load="loadNode"
+          node-key="id"
           lazy
           show-checkbox
           @check-change="handleCheckChange"
-        >
-        </el-tree>
+          ref="tree"
+        ></el-tree>
       </div>
       <div class="right">
         <ul>
           <li v-for="item in nodeList" :key="item.id">
-            <p>{{ item.label }}</p>
+            <p>{{ item.name }}</p>
           </li>
         </ul>
       </div>
@@ -25,77 +26,73 @@
 
 <script>
 export default {
-  name: "Shuttle",
+  name: 'Shuttle',
   data() {
     return {
       props: {
-        label: "name",
-        children: "zones",
+        label: 'name',
+        children: 'zones',
       },
       count: 1,
       nodeList: [],
-    };
+    }
   },
   methods: {
-    handleCheckChange(data, checked, indeterminate) {
-      console.log(data, checked, indeterminate);
+    handleCheckChange() {
+      let idList = []
+      idList = [
+        ...this.$refs.tree.getCheckedKeys(),
+        ...this.$refs.tree.getHalfCheckedKeys(),
+      ]
+      if (idList.length == 0) {
+        return false
+      }
+      var a = []
+      idList.forEach((item) => {
+        let b = this.$refs.tree.getNode(item)
+        a.push({
+          id: b.id,
+          name: b.label,
+        })
+      })
+      this.nodeList = a
     },
 
     loadNode(node, resolve) {
       if (node.level === 0) {
-        return resolve([{ name: "region1" }, { name: "region2" }]);
-      }
-      if (node.level > 3) return resolve([]);
-
-      var hasChild;
-      if (node.data.name === "region1") {
-        hasChild = true;
-      } else if (node.data.name === "region2") {
-        hasChild = false;
-      } else {
-        hasChild = Math.random() > 0.5;
+        return resolve([
+          { name: 'region' + Math.random() * 10000, id: Math.random() * 10000 },
+          {
+            name: 'region' + Math.random() * 10000,
+            id: Math.random() * 10000,
+          },
+        ])
       }
 
       setTimeout(() => {
-        var data;
-        if (hasChild) {
-          data = [
-            {
-              name: "zone" + this.count++,
-            },
-            {
-              name: "zone" + this.count++,
-            },
-          ];
-        } else {
-          data = [];
-        }
+        var data
 
-        resolve(data);
-      }, 500);
+        data = [
+          {
+            id: Math.random() * 10000,
+            name: 'zone' + Math.random() * 10000,
+          },
+          {
+            id: Math.random() * 10000,
+            name: 'zone' + Math.random() * 10000,
+          },
+        ]
+
+        resolve(data)
+        this.handleCheckChange()
+      }, 500)
     },
-    handleNodeClick() {
-      // let res = this.$refs.tree.getCheckedNodes();
-      // let arr = [];
-      // console.log(res);
-      // res.forEach((item) => {
-      //   let a = {};
-      //   a.id = item.id;
-      //   a.label = item.label;
-      //   arr.push(a);
-      // });
-      // this.nodeList = arr;
-      // console.log(
-      //   this.$refs.tree
-      //     .getCheckedKeys()
-      //     .concat(this.$refs.tree.getHalfCheckedKeys())
-      // );
-    },
+
     submit() {
-      alert(JSON.stringify(this.nodeList));
+      alert(JSON.stringify(this.nodeList))
     },
   },
-};
+}
 </script>
 
 <style>
