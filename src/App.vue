@@ -1,18 +1,21 @@
 <template>
   <div id="app">
-    <Shuttle />
+    <!-- <Shuttle /> -->
+    <Tshuttle />
   </div>
 </template>
 
 <script>
-import Shuttle from "./components/HelloWorld.vue";
+// import Shuttle from './components/HelloWorld.vue'
+import Tshuttle from './components/TableShuttle.vue'
 
 export default {
-  name: "App",
+  name: 'App',
   components: {
-    Shuttle,
+    // Shuttle,
+    Tshuttle,
   },
-};
+}
 </script>
 
 <style>
